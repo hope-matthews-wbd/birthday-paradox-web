@@ -239,9 +239,9 @@
       <h1>Content Breadth vs. Depth Simulation</h1>
       <h2 class="subtitle">What does this tool do?</h2>
       <p class="lead">
-        Evaluate how many Shorts served in a given session are overlapping with Shorts
-        served in another session on average with the Personalized Algo vs. the Totally
-        Random Algo.
+        Evaluate how many Shorts served in a given session are duplicates of Shorts
+        served in previous session(s) on average with the Personalized Algo vs. the
+        Totally Random Algo.
       </p>
     </header>
 
@@ -249,22 +249,22 @@
       <div class="title-row">
         <div class="field-group">
           <div>
-            <label for="high_freq_titles">Number of High Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with a lot of shorts" data-tooltip="i.e. parent titles with a lot of shorts">&#9432;</span></label>
+            <label for="high_freq_titles"># of High Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with a lot of shorts" data-tooltip="i.e. parent titles with a lot of shorts">&#9432;</span></label>
             <input id="high_freq_titles" name="high_freq_titles" type="number" value="275" min="0" max="5000">
           </div>
           <div>
-            <label for="avg_shorts_high">Avg Shorts per Title (High Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average number of shorts associated with each parent title in this group" data-tooltip="Average number of shorts associated with each parent title in this group">&#9432;</span></label>
+            <label for="avg_shorts_high">Avg Shorts per Title (High Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average # of shorts associated with each parent title in this group" data-tooltip="Average # of shorts associated with each parent title in this group">&#9432;</span></label>
             <input id="avg_shorts_high" name="avg_shorts_high" type="number" value="6" min="1" max="50" step="0.1">
           </div>
         </div>
         <div class="v-divider" aria-hidden="true"></div>
         <div class="field-group">
           <div>
-            <label for="low_freq_titles">Number of Low Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with lower volume of shorts" data-tooltip="i.e. parent titles with lower volume of shorts">&#9432;</span></label>
+            <label for="low_freq_titles"># of Low Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with lower volume of shorts" data-tooltip="i.e. parent titles with lower volume of shorts">&#9432;</span></label>
             <input id="low_freq_titles" name="low_freq_titles" type="number" value="825" min="0" max="5000">
           </div>
           <div>
-            <label for="avg_shorts_low">Avg Shorts per Title (Low Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average number of shorts associated with each parent title in this group" data-tooltip="Average number of shorts associated with each parent title in this group">&#9432;</span></label>
+            <label for="avg_shorts_low">Avg Shorts per Title (Low Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average # of shorts associated with each parent title in this group" data-tooltip="Average # of shorts associated with each parent title in this group">&#9432;</span></label>
             <input id="avg_shorts_low" name="avg_shorts_low" type="number" value="2" min="1" max="50" step="0.1">
           </div>
         </div>
@@ -276,7 +276,7 @@
           <input id="batch_size" name="batch_size" type="number" value="20" min="1" max="100">
         </div>
         <div>
-          <label for="lookback">Lookback <span class="info-icon" tabindex="0" role="img" aria-label="Number of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions" data-tooltip="Number of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions">&#9432;</span></label>
+          <label for="lookback">Lookback # of Sessions <span class="info-icon" tabindex="0" role="img" aria-label="# of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions" data-tooltip="# of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions">&#9432;</span></label>
           <input id="lookback" name="lookback" type="number" value="1" min="1" max="10" step="1">
         </div>
         <div style="display: none;">
@@ -298,8 +298,8 @@
         <div class="stats">
           <h2>Personalized Algo (SRA v1)</h2>
           <dl>
-            <dt>Avg number of Shorts repeated in a given session compared to Lookback Sessions:</dt><dd id="biased-mean">—</dd>
-            <dt>Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. the largest number of duplicate Shorts possible in any of the comparisons" data-tooltip="i.e. the largest number of duplicate Shorts possible in any of the comparisons">&#9432;</span>:</dt><dd id="biased-max">—</dd>
+            <dt>Avg # of Shorts repeated in a given session compared to Lookback Sessions:</dt><dd id="biased-mean">—</dd>
+            <dt>Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. the largest possible # of duplicate Shorts observed in any of the Lookback Sessions" data-tooltip="i.e. the largest possible # of duplicate Shorts observed in any of the Lookback Sessions">&#9432;</span>:</dt><dd id="biased-max">—</dd>
           </dl>
         </div>
         <canvas id="chart-biased" width="600" height="400"></canvas>
@@ -308,8 +308,8 @@
         <div class="stats">
           <h2>Totally Random Algo</h2>
           <dl>
-            <dt>Avg number of Shorts repeated in a given session compared to Lookback Sessions:</dt><dd id="uniform-mean">—</dd>
-            <dt>Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. the largest number of duplicate Shorts possible in any of the comparisons" data-tooltip="i.e. the largest number of duplicate Shorts possible in any of the comparisons">&#9432;</span>:</dt><dd id="uniform-max">—</dd>
+            <dt>Avg # of Shorts repeated in a given session compared to Lookback Sessions:</dt><dd id="uniform-mean">—</dd>
+            <dt>Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. the largest possible # of duplicate Shorts observed in any of the Lookback Sessions" data-tooltip="i.e. the largest possible # of duplicate Shorts observed in any of the Lookback Sessions">&#9432;</span>:</dt><dd id="uniform-max">—</dd>
           </dl>
         </div>
         <canvas id="chart-uniform" width="600" height="400"></canvas>
@@ -495,19 +495,17 @@
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, W, H);
 
-      const bins = batchSize;
+      const total = overlaps.length || 1;
       let maxVal = 0;
       for (const v of overlaps) if (v > maxVal) maxVal = v;
-      const numBins = Math.max(1, Math.min(bins, maxVal + 1));
+      const numBins = Math.max(1, maxVal + 1); // one bar per integer overlap value
       const counts = new Array(numBins).fill(0);
       for (const v of overlaps) {
-        let b = Math.floor((v / (maxVal + 1)) * numBins);
-        if (b >= numBins) b = numBins - 1;
-        counts[b]++;
+        if (v >= 0 && v < numBins) counts[v]++;
       }
       const maxCount = Math.max(...counts, 1);
 
-      const padL = 50, padR = 15, padT = 15, padB = 35;
+      const padL = 50, padR = 15, padT = 20, padB = 42;
       const plotW = W - padL - padR;
       const plotH = H - padT - padB;
 
@@ -520,32 +518,56 @@
       ctx.stroke();
 
       const barW = plotW / numBins;
-      ctx.fillStyle = color;
-      ctx.strokeStyle = "#000";
+      const gap = Math.min(4, barW * 0.15);
       for (let i = 0; i < numBins; i++) {
         const h = (counts[i] / maxCount) * plotH;
-        const x = padL + i * barW;
+        const x = padL + i * barW + gap / 2;
+        const w = barW - gap;
         const y = padT + plotH - h;
-        ctx.fillRect(x, y, barW - 1, h);
-        ctx.strokeRect(x, y, barW - 1, h);
+
+        ctx.fillStyle = color;
+        ctx.strokeStyle = "#000";
+        ctx.fillRect(x, y, w, h);
+        ctx.strokeRect(x, y, w, h);
+
+        const cx = x + w / 2;
+
+        if (counts[i] > 0) {
+          const pct = ((counts[i] / total) * 100).toFixed(1) + "%";
+          const cnt = String(counts[i]);
+          ctx.textAlign = "center";
+
+          // The bar's Y value (session count) just above the bar — smaller, muted
+          ctx.font = (w >= 30 ? "10px" : "9px") + " system-ui, sans-serif";
+          ctx.fillStyle = "#888";
+          ctx.fillText(cnt, cx, y - 6);
+
+          // Percentage — larger and bold, spaced away from the count
+          ctx.font = "bold " + (w >= 40 ? "14px" : w >= 26 ? "12px" : "10px") + " system-ui, sans-serif";
+          ctx.fillStyle = "#0b1220";
+          if (h >= 48) {
+            ctx.fillText(pct, cx, y + 26);
+          } else {
+            ctx.fillText(pct, cx, y - 22);
+          }
+        }
+
+        ctx.fillStyle = "#333";
+        ctx.font = "11px system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(String(i), cx, padT + plotH + 15);
       }
 
       ctx.fillStyle = "#333";
       ctx.font = "12px system-ui, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("Overlap count", padL + plotW / 2, H - 8);
+      ctx.fillText("# of Repeats in a Session", padL + plotW / 2, H - 6);
       ctx.save();
-      ctx.translate(14, padT + plotH / 2);
+      ctx.translate(32, padT + plotH / 2);
       ctx.rotate(-Math.PI / 2);
-      ctx.fillText("Frequency", 0, 0);
+      ctx.fillText("# of Sessions with Repeats", 0, 0);
       ctx.restore();
 
-      ctx.textAlign = "right";
-      ctx.fillText("0", padL - 6, padT + plotH);
-      ctx.fillText(String(maxCount), padL - 6, padT + 10);
-      ctx.textAlign = "center";
-      ctx.fillText("0", padL, padT + plotH + 16);
-      ctx.fillText(String(maxVal), padL + plotW, padT + plotH + 16);
     }
 
     function runSimulation() {
