@@ -171,6 +171,34 @@
       color: var(--text);
     }
 
+    .note {
+      margin: 0.6rem 0 0;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    .how-to-read {
+      margin-top: 2rem;
+    }
+
+    .how-to-read-group {
+      margin-top: 1rem;
+    }
+
+    .how-to-read-heading {
+      margin: 0 0 0.35rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .how-to-read ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
     input {
       width: 100%;
       padding: 0.55rem 0.65rem;
@@ -243,6 +271,7 @@
         served in previous session(s) on average with the Personalized Algo vs. the
         Totally Random Algo.
       </p>
+      <p class="note">Note: Current recommendations are selected with no knowledge of what was recommended in prior sessions</p>
     </header>
 
     <form class="controls" id="controls">
@@ -315,6 +344,19 @@
         <canvas id="chart-uniform" width="600" height="400"></canvas>
       </article>
     </div>
+
+    <section class="how-to-read">
+      <h2 class="subtitle">How to read the graphs:</h2>
+      <p class="lead" id="how-to-read-intro"></p>
+      <div class="how-to-read-group">
+        <h3 class="how-to-read-heading">Personalized Algo (SRA v1)</h3>
+        <ul id="how-to-read-biased"></ul>
+      </div>
+      <div class="how-to-read-group">
+        <h3 class="how-to-read-heading">Totally Random Algo</h3>
+        <ul id="how-to-read-uniform"></ul>
+      </div>
+    </section>
 
     <footer>Static build — computation runs client-side in a Web Worker.</footer>
   </div>
@@ -570,6 +612,40 @@
 
     }
 
+    function buildBullets(overlaps, ulId) {
+      const total = overlaps.length || 1;
+      let maxVal = 0;
+      for (const v of overlaps) if (v > maxVal) maxVal = v;
+      const counts = new Array(maxVal + 1).fill(0);
+      for (const v of overlaps) counts[v]++;
+
+      const ul = document.getElementById(ulId);
+      ul.innerHTML = "";
+      for (let k = 0; k <= maxVal; k++) {
+        if (counts[k] === 0) continue;
+        const pct = ((counts[k] / total) * 100).toFixed(1) + "%";
+        let text;
+        if (k === 0) {
+          text = pct + " did not have any duplicates from the Lookback Sessions";
+        } else if (k === 1) {
+          text = pct + " had 1 duplicate from the Lookback Sessions";
+        } else {
+          text = pct + " had " + k + " duplicates from the Lookback Sessions";
+        }
+        const li = document.createElement("li");
+        li.textContent = text;
+        ul.appendChild(li);
+      }
+    }
+
+    function updateHowToRead(biasedOverlaps, uniformOverlaps) {
+      const total = biasedOverlaps.length || 1;
+      document.getElementById("how-to-read-intro").textContent =
+        "Of the " + total.toLocaleString() + " sessions simulated:";
+      buildBullets(biasedOverlaps, "how-to-read-biased");
+      buildBullets(uniformOverlaps, "how-to-read-uniform");
+    }
+
     function runSimulation() {
       runBtn.disabled = true;
       statusEl.textContent = "Running simulation…";
@@ -602,6 +678,7 @@
           document.getElementById("biased-max").textContent = msg.biasedMax;
           document.getElementById("uniform-mean").textContent = msg.uniformMean.toFixed(3);
           document.getElementById("uniform-max").textContent = msg.uniformMax;
+          updateHowToRead(msg.biasedOverlaps, msg.uniformOverlaps);
           statusEl.textContent = "Completed " + params.numSimulations.toLocaleString() + " simulations.";
           runBtn.disabled = false;
           worker.terminate();
