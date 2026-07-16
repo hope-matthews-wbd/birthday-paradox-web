@@ -214,12 +214,21 @@
     .stats h2 { margin: 0 0 0.75rem; font-size: 1.1rem; }
     .stats dl {
       margin: 0;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 0.35rem 1rem;
     }
-    dt { color: var(--muted); }
-    dd { margin: 0; font-weight: 600; }
+    .stats dt {
+      display: inline;
+      color: var(--muted);
+    }
+    .stats dd {
+      display: inline;
+      margin: 0 0 0 0.3rem;
+      font-weight: 600;
+    }
+    .stats dd::after {
+      content: "";
+      display: block;
+      margin-bottom: 0.5rem;
+    }
 
     footer { margin-top: 2.5rem; color: var(--muted); font-size: 0.8rem; }
   </style>
@@ -286,24 +295,24 @@
 
     <div class="results" id="results">
       <article class="card">
-        <canvas id="chart-biased" width="600" height="400"></canvas>
         <div class="stats">
           <h2>Personalized Algo (SRA v1)</h2>
           <dl>
-            <dt>Mean overlap</dt><dd id="biased-mean">—</dd>
-            <dt>Max overlap</dt><dd id="biased-max">—</dd>
+            <dt>Avg number of Shorts repeated in a given session compared to Lookback Sessions:</dt><dd id="biased-mean">—</dd>
+            <dt>Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. the largest number of duplicate Shorts possible in any of the comparisons" data-tooltip="i.e. the largest number of duplicate Shorts possible in any of the comparisons">&#9432;</span>:</dt><dd id="biased-max">—</dd>
           </dl>
         </div>
+        <canvas id="chart-biased" width="600" height="400"></canvas>
       </article>
       <article class="card">
-        <canvas id="chart-uniform" width="600" height="400"></canvas>
         <div class="stats">
           <h2>Totally Random Algo</h2>
           <dl>
-            <dt>Mean overlap</dt><dd id="uniform-mean">—</dd>
-            <dt>Max overlap</dt><dd id="uniform-max">—</dd>
+            <dt>Avg number of Shorts repeated in a given session compared to Lookback Sessions:</dt><dd id="uniform-mean">—</dd>
+            <dt>Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. the largest number of duplicate Shorts possible in any of the comparisons" data-tooltip="i.e. the largest number of duplicate Shorts possible in any of the comparisons">&#9432;</span>:</dt><dd id="uniform-max">—</dd>
           </dl>
         </div>
+        <canvas id="chart-uniform" width="600" height="400"></canvas>
       </article>
     </div>
 
