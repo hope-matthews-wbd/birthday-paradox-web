@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Birthday Paradox Simulation</title>
+  <title>Content Breadth vs. Depth Simulation</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -53,11 +53,76 @@
       margin-bottom: 1.5rem;
     }
 
+    .controls .separator {
+      grid-column: 1 / -1;
+      height: 0;
+      margin: 0.25rem 0;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
     label {
       display: block;
       font-size: 0.85rem;
       color: var(--muted);
       margin-bottom: 0.35rem;
+    }
+
+    .info-icon {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
+    .info-icon::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%);
+      white-space: normal;
+      width: max-content;
+      max-width: 260px;
+      text-align: left;
+      background: #0b1220;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.35;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.12s ease;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .info-icon::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 3px);
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--border);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.12s ease;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .info-icon:hover::after,
+    .info-icon:focus::after,
+    .info-icon:hover::before,
+    .info-icon:focus::before {
+      opacity: 1;
+      visibility: visible;
     }
 
     input {
@@ -116,7 +181,7 @@
 <body>
   <div class="container">
     <header>
-      <h1>Birthday Paradox Simulation</h1>
+      <h1>Content Breadth vs. Depth Simulation</h1>
       <p class="lead">
         Compare overlap between two randomly drawn batches under biased (SRA-style)
         sampling versus uniform random sampling across titles and shorts. Runs entirely
@@ -126,22 +191,36 @@
 
     <form class="controls" id="controls">
       <div>
-        <label for="num_titles">Number of titles</label>
-        <input id="num_titles" name="num_titles" type="number" value="800" min="10" max="5000">
-      </div>
-      <div>
-        <label for="avg_shorts_per_title">Avg shorts per title</label>
-        <input id="avg_shorts_per_title" name="avg_shorts_per_title" type="number" value="1.5" min="1" max="10" step="0.1">
-      </div>
-      <div>
-        <label for="batch_size">Batch size</label>
+        <label for="batch_size">Shorts Served in Session</label>
         <input id="batch_size" name="batch_size" type="number" value="20" min="1" max="100">
       </div>
       <div>
-        <label for="num_simulations">Simulations</label>
-        <input id="num_simulations" name="num_simulations" type="number" value="10000" min="100" max="50000" step="100">
+        <label for="lookback">Lookback <span class="info-icon" tabindex="0" role="img" aria-label="Number of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions" data-tooltip="Number of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions">&#9432;</span></label>
+        <input id="lookback" name="lookback" type="number" value="1" min="1" max="10" step="1">
+      </div>
+      <hr class="separator">
+      <div>
+        <label for="high_freq_titles">Number of High Frequency Titles</label>
+        <input id="high_freq_titles" name="high_freq_titles" type="number" value="275" min="0" max="5000">
       </div>
       <div>
+        <label for="avg_shorts_high">Avg Shorts per Title (High Freq)</label>
+        <input id="avg_shorts_high" name="avg_shorts_high" type="number" value="6" min="1" max="50" step="0.1">
+      </div>
+      <hr class="separator">
+      <div>
+        <label for="low_freq_titles">Number of Low Frequency Titles</label>
+        <input id="low_freq_titles" name="low_freq_titles" type="number" value="825" min="0" max="5000">
+      </div>
+      <div>
+        <label for="avg_shorts_low">Avg Shorts per Title (Low Freq)</label>
+        <input id="avg_shorts_low" name="avg_shorts_low" type="number" value="2" min="1" max="50" step="0.1">
+      </div>
+      <div style="display: none;">
+        <label for="num_simulations">Simulations</label>
+        <input id="num_simulations" name="num_simulations" type="number" value="1000" min="100" max="50000" step="100">
+      </div>
+      <div style="display: none;">
         <label for="seed">Random seed (optional, best to ignore)</label>
         <input id="seed" name="seed" type="number" value="42">
       </div>
@@ -154,7 +233,7 @@
       <article class="card">
         <canvas id="chart-biased" width="600" height="400"></canvas>
         <div class="stats">
-          <h2>Biased Sampling (SRA Simulation)</h2>
+          <h2>Personalized Algo (SRA v1)</h2>
           <dl>
             <dt>Mean overlap</dt><dd id="biased-mean">—</dd>
             <dt>Max overlap</dt><dd id="biased-max">—</dd>
@@ -164,7 +243,7 @@
       <article class="card">
         <canvas id="chart-uniform" width="600" height="400"></canvas>
         <div class="stats">
-          <h2>Uniform Sampling (Totally random)</h2>
+          <h2>Totally Random Algo</h2>
           <dl>
             <dt>Mean overlap</dt><dd id="uniform-mean">—</dd>
             <dt>Max overlap</dt><dd id="uniform-max">—</dd>
@@ -234,10 +313,11 @@
       return w;
     }
 
-    function getShortsP(titleP, meanShortsPerTitle, rng) {
+    function getShortsP(titleP, highCount, avgShortsHigh, avgShortsLow, rng) {
       const shorts = [];
       for (let i = 0; i < titleP.length; i++) {
-        const numShorts = poisson(meanShortsPerTitle - 1, rng) + 1;
+        const mean = (i < highCount) ? avgShortsHigh : avgShortsLow;
+        const numShorts = poisson(mean - 1, rng) + 1;
         const share = titleP[i] / numShorts;
         for (let j = 0; j < numShorts; j++) shorts.push(share);
       }
@@ -256,36 +336,54 @@
       return new Set(idx.slice(0, batchSize));
     }
 
-    function simulateOverlaps(shortsP, batchSize, numSimulations, rng, progressBase, progressSpan) {
+    function simulateOverlaps(shortsP, batchSize, numSimulations, lookback, rng, progressBase, progressSpan) {
       const concentration = new Float64Array(shortsP.length);
       for (let i = 0; i < shortsP.length; i++) concentration[i] = shortsP[i] * batchSize;
 
+      const sessions = new Array(numSimulations);
+      const genStep = Math.max(1, Math.floor(numSimulations / 25));
+      for (let k = 0; k < numSimulations; k++) {
+        sessions[k] = topKDraw(concentration, batchSize, rng);
+        if (k % genStep === 0) {
+          postMessage({ type: "progress", value: progressBase + (k / numSimulations) * progressSpan * 0.5 });
+        }
+      }
+
       const overlaps = new Int32Array(numSimulations);
-      const step = Math.max(1, Math.floor(numSimulations / 50));
-      for (let s = 0; s < numSimulations; s++) {
-        const a = topKDraw(concentration, batchSize, rng);
-        const b = topKDraw(concentration, batchSize, rng);
+      const cmpStep = Math.max(1, Math.floor(numSimulations / 25));
+      for (let i = 0; i < numSimulations; i++) {
+        const s = Math.min(lookback, numSimulations - 1);
+        const chosen = new Set();
+        while (chosen.size < s) {
+          const r = Math.floor(rng() * numSimulations);
+          if (r !== i && !chosen.has(r)) chosen.add(r);
+        }
+        const union = new Set();
+        for (const j of chosen) {
+          for (const v of sessions[j]) union.add(v);
+        }
         let overlap = 0;
-        for (const v of a) if (b.has(v)) overlap++;
-        overlaps[s] = overlap;
-        if (s % step === 0) {
-          postMessage({ type: "progress", value: progressBase + (s / numSimulations) * progressSpan });
+        for (const v of sessions[i]) if (union.has(v)) overlap++;
+        overlaps[i] = overlap;
+        if (i % cmpStep === 0) {
+          postMessage({ type: "progress", value: progressBase + progressSpan * 0.5 + (i / numSimulations) * progressSpan * 0.5 });
         }
       }
       return overlaps;
     }
 
     onmessage = function (e) {
-      const { numTitles, avgShorts, batchSize, numSimulations, seed } = e.data;
+      const { highCount, avgShortsHigh, lowCount, avgShortsLow, batchSize, numSimulations, lookback, seed } = e.data;
+      const total = highCount + lowCount;
       const rng = makeRng(seed);
 
-      const titlePBiased = getTitleP(numTitles);
-      const shortsPBiased = getShortsP(titlePBiased, avgShorts, rng);
-      const overlapsBiased = simulateOverlaps(shortsPBiased, batchSize, numSimulations, rng, 0, 0.5);
+      const titlePBiased = getTitleP(total);
+      const shortsPBiased = getShortsP(titlePBiased, highCount, avgShortsHigh, avgShortsLow, rng);
+      const overlapsBiased = simulateOverlaps(shortsPBiased, batchSize, numSimulations, lookback, rng, 0, 0.5);
 
-      const titlePUniform = new Float64Array(numTitles).fill(1 / numTitles);
-      const shortsPUniform = getShortsP(titlePUniform, avgShorts, rng);
-      const overlapsUniform = simulateOverlaps(shortsPUniform, batchSize, numSimulations, rng, 0.5, 0.5);
+      const titlePUniform = new Float64Array(total).fill(1 / total);
+      const shortsPUniform = getShortsP(titlePUniform, highCount, avgShortsHigh, avgShortsLow, rng);
+      const overlapsUniform = simulateOverlaps(shortsPUniform, batchSize, numSimulations, lookback, rng, 0.5, 0.5);
 
       let biasedMean = 0, biasedMax = 0;
       for (let i = 0; i < overlapsBiased.length; i++) {
@@ -391,10 +489,17 @@
       statusEl.textContent = "Running simulation…";
 
       const payload = Object.fromEntries(new FormData(form).entries());
+      let lookback = Number(payload.lookback);
+      if (Number.isNaN(lookback) || lookback < 1) lookback = 1;
+      if (lookback > 10) lookback = 10;
+
       const params = {
-        numTitles: Number(payload.num_titles),
-        avgShorts: Number(payload.avg_shorts_per_title),
+        highCount: Number(payload.high_freq_titles),
+        avgShortsHigh: Number(payload.avg_shorts_high),
+        lowCount: Number(payload.low_freq_titles),
+        avgShortsLow: Number(payload.avg_shorts_low),
         batchSize: Number(payload.batch_size),
+        lookback: lookback,
         numSimulations: Number(payload.num_simulations),
         seed: Number(payload.seed),
       };
