@@ -79,9 +79,9 @@
     .info-icon::after {
       content: attr(data-tooltip);
       position: absolute;
-      left: 50%;
-      bottom: calc(100% + 8px);
-      transform: translateX(-50%);
+      left: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
       white-space: normal;
       width: max-content;
       max-width: 260px;
@@ -105,11 +105,11 @@
     .info-icon::before {
       content: "";
       position: absolute;
-      left: 50%;
-      bottom: calc(100% + 3px);
-      transform: translateX(-50%);
+      left: calc(100% + 5px);
+      top: 50%;
+      transform: translateY(-50%);
       border: 5px solid transparent;
-      border-top-color: var(--border);
+      border-right-color: var(--border);
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.12s ease;
@@ -191,7 +191,7 @@
 
     <form class="controls" id="controls">
       <div>
-        <label for="batch_size">Shorts Served in Session</label>
+        <label for="batch_size">Shorts Served in Session <span class="info-icon" tabindex="0" role="img" aria-label="How many shorts does the user swipe through in each session?" data-tooltip="How many shorts does the user swipe through in each session?">&#9432;</span></label>
         <input id="batch_size" name="batch_size" type="number" value="20" min="1" max="100">
       </div>
       <div>
@@ -200,20 +200,20 @@
       </div>
       <hr class="separator">
       <div>
-        <label for="high_freq_titles">Number of High Frequency Titles</label>
+        <label for="high_freq_titles">Number of High Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with a lot of shorts" data-tooltip="i.e. parent titles with a lot of shorts">&#9432;</span></label>
         <input id="high_freq_titles" name="high_freq_titles" type="number" value="275" min="0" max="5000">
       </div>
       <div>
-        <label for="avg_shorts_high">Avg Shorts per Title (High Freq)</label>
+        <label for="avg_shorts_high">Avg Shorts per Title (High Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average number of shorts associated with each parent title in this group" data-tooltip="Average number of shorts associated with each parent title in this group">&#9432;</span></label>
         <input id="avg_shorts_high" name="avg_shorts_high" type="number" value="6" min="1" max="50" step="0.1">
       </div>
       <hr class="separator">
       <div>
-        <label for="low_freq_titles">Number of Low Frequency Titles</label>
+        <label for="low_freq_titles">Number of Low Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with lower volume of shorts" data-tooltip="i.e. parent titles with lower volume of shorts">&#9432;</span></label>
         <input id="low_freq_titles" name="low_freq_titles" type="number" value="825" min="0" max="5000">
       </div>
       <div>
-        <label for="avg_shorts_low">Avg Shorts per Title (Low Freq)</label>
+        <label for="avg_shorts_low">Avg Shorts per Title (Low Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average number of shorts associated with each parent title in this group" data-tooltip="Average number of shorts associated with each parent title in this group">&#9432;</span></label>
         <input id="avg_shorts_low" name="avg_shorts_low" type="number" value="2" min="1" max="50" step="0.1">
       </div>
       <div style="display: none;">
