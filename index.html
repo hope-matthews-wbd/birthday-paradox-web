@@ -38,13 +38,13 @@
     p.lead {
       margin: 0;
       color: var(--muted);
-      max-width: 60ch;
+      max-width: none;
       line-height: 1.6;
     }
 
     .controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      display: flex;
+      flex-direction: column;
       gap: 1rem;
       background: var(--panel);
       border: 1px solid var(--border);
@@ -53,12 +53,51 @@
       margin-bottom: 1.5rem;
     }
 
+    .title-row,
+    .bottom-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: end;
+    }
+
+    .field-group {
+      display: flex;
+      flex: 1;
+      gap: 1rem;
+      min-width: min(100%, 280px);
+    }
+
+    .field-group > div {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bottom-row > div {
+      flex: 1;
+      min-width: min(100%, 160px);
+    }
+
+    .v-divider {
+      width: 1px;
+      align-self: stretch;
+      background: var(--border);
+      margin: 0 0.25rem;
+      flex-shrink: 0;
+    }
+
     .controls .separator {
-      grid-column: 1 / -1;
+      width: 100%;
       height: 0;
       margin: 0.25rem 0;
       border: none;
       border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 640px) {
+      .v-divider {
+        display: none;
+      }
     }
 
     label {
@@ -125,6 +164,13 @@
       visibility: visible;
     }
 
+    .subtitle {
+      margin: 0 0 0.4rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
     input {
       width: 100%;
       padding: 0.55rem 0.65rem;
@@ -182,49 +228,58 @@
   <div class="container">
     <header>
       <h1>Content Breadth vs. Depth Simulation</h1>
+      <h2 class="subtitle">What does this tool do?</h2>
       <p class="lead">
-        Compare overlap between two randomly drawn batches under biased (SRA-style)
-        sampling versus uniform random sampling across titles and shorts. Runs entirely
-        in your browser.
+        Evaluate how many Shorts served in a given session are overlapping with Shorts
+        served in another session on average with the Personalized Algo vs. the Totally
+        Random Algo.
       </p>
     </header>
 
     <form class="controls" id="controls">
-      <div>
-        <label for="batch_size">Shorts Served in Session <span class="info-icon" tabindex="0" role="img" aria-label="How many shorts does the user swipe through in each session?" data-tooltip="How many shorts does the user swipe through in each session?">&#9432;</span></label>
-        <input id="batch_size" name="batch_size" type="number" value="20" min="1" max="100">
-      </div>
-      <div>
-        <label for="lookback">Lookback <span class="info-icon" tabindex="0" role="img" aria-label="Number of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions" data-tooltip="Number of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions">&#9432;</span></label>
-        <input id="lookback" name="lookback" type="number" value="1" min="1" max="10" step="1">
+      <div class="title-row">
+        <div class="field-group">
+          <div>
+            <label for="high_freq_titles">Number of High Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with a lot of shorts" data-tooltip="i.e. parent titles with a lot of shorts">&#9432;</span></label>
+            <input id="high_freq_titles" name="high_freq_titles" type="number" value="275" min="0" max="5000">
+          </div>
+          <div>
+            <label for="avg_shorts_high">Avg Shorts per Title (High Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average number of shorts associated with each parent title in this group" data-tooltip="Average number of shorts associated with each parent title in this group">&#9432;</span></label>
+            <input id="avg_shorts_high" name="avg_shorts_high" type="number" value="6" min="1" max="50" step="0.1">
+          </div>
+        </div>
+        <div class="v-divider" aria-hidden="true"></div>
+        <div class="field-group">
+          <div>
+            <label for="low_freq_titles">Number of Low Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with lower volume of shorts" data-tooltip="i.e. parent titles with lower volume of shorts">&#9432;</span></label>
+            <input id="low_freq_titles" name="low_freq_titles" type="number" value="825" min="0" max="5000">
+          </div>
+          <div>
+            <label for="avg_shorts_low">Avg Shorts per Title (Low Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average number of shorts associated with each parent title in this group" data-tooltip="Average number of shorts associated with each parent title in this group">&#9432;</span></label>
+            <input id="avg_shorts_low" name="avg_shorts_low" type="number" value="2" min="1" max="50" step="0.1">
+          </div>
+        </div>
       </div>
       <hr class="separator">
-      <div>
-        <label for="high_freq_titles">Number of High Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with a lot of shorts" data-tooltip="i.e. parent titles with a lot of shorts">&#9432;</span></label>
-        <input id="high_freq_titles" name="high_freq_titles" type="number" value="275" min="0" max="5000">
+      <div class="bottom-row">
+        <div>
+          <label for="batch_size">Shorts Served in Session <span class="info-icon" tabindex="0" role="img" aria-label="How many shorts does the user swipe through in each session?" data-tooltip="How many shorts does the user swipe through in each session?">&#9432;</span></label>
+          <input id="batch_size" name="batch_size" type="number" value="20" min="1" max="100">
+        </div>
+        <div>
+          <label for="lookback">Lookback <span class="info-icon" tabindex="0" role="img" aria-label="Number of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions" data-tooltip="Number of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions">&#9432;</span></label>
+          <input id="lookback" name="lookback" type="number" value="1" min="1" max="10" step="1">
+        </div>
+        <div style="display: none;">
+          <label for="num_simulations">Simulations</label>
+          <input id="num_simulations" name="num_simulations" type="number" value="1000" min="100" max="50000" step="100">
+        </div>
+        <div style="display: none;">
+          <label for="seed">Random seed (optional, best to ignore)</label>
+          <input id="seed" name="seed" type="number" value="42">
+        </div>
+        <button type="submit" id="run-btn">Run simulation</button>
       </div>
-      <div>
-        <label for="avg_shorts_high">Avg Shorts per Title (High Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average number of shorts associated with each parent title in this group" data-tooltip="Average number of shorts associated with each parent title in this group">&#9432;</span></label>
-        <input id="avg_shorts_high" name="avg_shorts_high" type="number" value="6" min="1" max="50" step="0.1">
-      </div>
-      <hr class="separator">
-      <div>
-        <label for="low_freq_titles">Number of Low Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with lower volume of shorts" data-tooltip="i.e. parent titles with lower volume of shorts">&#9432;</span></label>
-        <input id="low_freq_titles" name="low_freq_titles" type="number" value="825" min="0" max="5000">
-      </div>
-      <div>
-        <label for="avg_shorts_low">Avg Shorts per Title (Low Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average number of shorts associated with each parent title in this group" data-tooltip="Average number of shorts associated with each parent title in this group">&#9432;</span></label>
-        <input id="avg_shorts_low" name="avg_shorts_low" type="number" value="2" min="1" max="50" step="0.1">
-      </div>
-      <div style="display: none;">
-        <label for="num_simulations">Simulations</label>
-        <input id="num_simulations" name="num_simulations" type="number" value="1000" min="100" max="50000" step="100">
-      </div>
-      <div style="display: none;">
-        <label for="seed">Random seed (optional, best to ignore)</label>
-        <input id="seed" name="seed" type="number" value="42">
-      </div>
-      <button type="submit" id="run-btn">Run simulation</button>
     </form>
 
     <div class="status" id="status">Loading initial simulation…</div>
