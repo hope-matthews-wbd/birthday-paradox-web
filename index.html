@@ -281,21 +281,34 @@
 
       const titlePBiased = getTitleP(numTitles);
       const shortsPBiased = getShortsP(titlePBiased, avgShorts, rng);
-      const overlapsBiased = simulateOverlaps(shortsPBiased, batchSize, numSimulations, rng, 0, 1);
+      const overlapsBiased = simulateOverlaps(shortsPBiased, batchSize, numSimulations, rng, 0, 0.5);
 
-      let mean = 0, max = 0;
+      const titlePUniform = new Float64Array(numTitles).fill(1 / numTitles);
+      const shortsPUniform = getShortsP(titlePUniform, avgShorts, rng);
+      const overlapsUniform = simulateOverlaps(shortsPUniform, batchSize, numSimulations, rng, 0.5, 0.5);
+
+      let biasedMean = 0, biasedMax = 0;
       for (let i = 0; i < overlapsBiased.length; i++) {
-        mean += overlapsBiased[i];
-        if (overlapsBiased[i] > max) max = overlapsBiased[i];
+        biasedMean += overlapsBiased[i];
+        if (overlapsBiased[i] > biasedMax) biasedMax = overlapsBiased[i];
       }
-      mean /= overlapsBiased.length;
+      biasedMean /= overlapsBiased.length;
 
-      // Mirrors the source script: both panels report the biased draw.
+      let uniformMean = 0, uniformMax = 0;
+      for (let i = 0; i < overlapsUniform.length; i++) {
+        uniformMean += overlapsUniform[i];
+        if (overlapsUniform[i] > uniformMax) uniformMax = overlapsUniform[i];
+      }
+      uniformMean /= overlapsUniform.length;
+
       postMessage({
         type: "done",
-        overlaps: Array.from(overlapsBiased),
-        mean: mean,
-        max: max,
+        biasedOverlaps: Array.from(overlapsBiased),
+        biasedMean: biasedMean,
+        biasedMax: biasedMax,
+        uniformOverlaps: Array.from(overlapsUniform),
+        uniformMean: uniformMean,
+        uniformMax: uniformMax,
         batchSize: batchSize
       });
     };
@@ -392,12 +405,12 @@
         if (msg.type === "progress") {
           statusEl.textContent = "Running simulation… " + Math.round(msg.value * 100) + "%";
         } else if (msg.type === "done") {
-          drawHistogram("chart-biased", msg.overlaps, "#87ceeb", msg.batchSize);
-          drawHistogram("chart-uniform", msg.overlaps, "#87ceeb", msg.batchSize);
-          document.getElementById("biased-mean").textContent = msg.mean.toFixed(3);
-          document.getElementById("biased-max").textContent = msg.max;
-          document.getElementById("uniform-mean").textContent = msg.mean.toFixed(3);
-          document.getElementById("uniform-max").textContent = msg.max;
+          drawHistogram("chart-biased", msg.biasedOverlaps, "#87ceeb", msg.batchSize);
+          drawHistogram("chart-uniform", msg.uniformOverlaps, "#f08080", msg.batchSize);
+          document.getElementById("biased-mean").textContent = msg.biasedMean.toFixed(3);
+          document.getElementById("biased-max").textContent = msg.biasedMax;
+          document.getElementById("uniform-mean").textContent = msg.uniformMean.toFixed(3);
+          document.getElementById("uniform-max").textContent = msg.uniformMax;
           statusEl.textContent = "Completed " + params.numSimulations.toLocaleString() + " simulations.";
           runBtn.disabled = false;
           worker.terminate();
