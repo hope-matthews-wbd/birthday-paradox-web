@@ -31,9 +31,18 @@
       padding: 2rem 1.25rem 3rem;
     }
 
-    header { margin-bottom: 2rem; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
 
-    h1 { margin: 0 0 0.5rem; font-size: 2rem; }
+    header h1 { margin: 0; flex: 1 1 auto; min-width: min(100%, 280px); }
+
+    h1 { font-size: 2rem; }
 
     p.lead {
       margin: 0;
@@ -137,7 +146,7 @@
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.12s ease;
-      z-index: 20;
+      z-index: 100;
       pointer-events: none;
     }
 
@@ -152,7 +161,7 @@
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.12s ease;
-      z-index: 20;
+      z-index: 100;
       pointer-events: none;
     }
 
@@ -164,6 +173,49 @@
       visibility: visible;
     }
 
+    .info-icon--left::after {
+      left: auto;
+      right: calc(100% + 10px);
+    }
+
+    .info-icon--left::before {
+      left: auto;
+      right: calc(100% + 5px);
+      border-right-color: transparent;
+      border-left-color: var(--border);
+    }
+
+    .stats,
+    .results,
+    .metric-section,
+    .tab-panel {
+      overflow: visible;
+    }
+
+    #tab-titles .results .card:nth-child(odd) .stats .info-icon::after {
+      left: calc(100% + 10px);
+      right: auto;
+    }
+
+    #tab-titles .results .card:nth-child(odd) .stats .info-icon::before {
+      left: calc(100% + 5px);
+      right: auto;
+      border-right-color: var(--border);
+      border-left-color: transparent;
+    }
+
+    #tab-titles .results .card:nth-child(even) .stats .info-icon::after {
+      left: auto;
+      right: calc(100% + 10px);
+    }
+
+    #tab-titles .results .card:nth-child(even) .stats .info-icon::before {
+      left: auto;
+      right: calc(100% + 5px);
+      border-right-color: transparent;
+      border-left-color: var(--border);
+    }
+
     .subtitle {
       margin: 0 0 0.4rem;
       font-size: 1.1rem;
@@ -172,7 +224,7 @@
     }
 
     .note {
-      margin: 0.6rem 0 0;
+      margin: 0.6rem 0 1.75rem;
       font-style: italic;
       color: var(--muted);
     }
@@ -233,10 +285,16 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 12px;
-      overflow: hidden;
+      overflow: visible;
     }
 
-    .card canvas { width: 100%; display: block; background: white; }
+    .card canvas {
+      width: 100%;
+      display: block;
+      background: white;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
 
     .stats { padding: 1rem 1.25rem 1.25rem; }
     .stats h2 { margin: 0 0 0.75rem; font-size: 1.1rem; }
@@ -259,12 +317,72 @@
     }
 
     footer { margin-top: 2.5rem; color: var(--muted); font-size: 0.8rem; }
+
+    .metric-section { margin-top: 2rem; }
+    .metric-section > .subtitle { margin-bottom: 1rem; }
+
+    .tabs { display: flex; gap: 0.25rem; margin: 0; flex-shrink: 0; flex-wrap: nowrap; }
+    .tab-btn { background: none; border: none; color: var(--muted); padding: 0.6rem 0.9rem; cursor: pointer; font-size: 0.95rem; font-weight: 600; border-bottom: 2px solid transparent; border-radius: 0; }
+    .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); }
+    .tab-btn[data-tab="tab-titles"].active { border-bottom-color: #e05a5a; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Tab 2 — Parent Title Repetition (red/coral theme) */
+    #tab-titles {
+      --accent-t2: #e05a5a;
+      --accent-t2-hover: #e57373;
+      --accent-t2-focus: rgba(224, 90, 90, 0.35);
+    }
+
+    #tab-titles .controls,
+    #tab-titles .card {
+      border-color: rgba(224, 90, 90, 0.22);
+    }
+
+    #tab-titles #run-btn-t2 {
+      background: var(--accent-t2);
+      color: #fff;
+    }
+
+    #tab-titles #run-btn-t2:hover:not(:disabled) {
+      background: var(--accent-t2-hover);
+    }
+
+    #tab-titles input:focus {
+      outline: none;
+      border-color: var(--accent-t2);
+      box-shadow: 0 0 0 2px var(--accent-t2-focus);
+    }
+
+    #tab-titles .info-icon {
+      color: var(--accent-t2);
+    }
+
+    #tab-titles .info-icon::after {
+      border-color: rgba(224, 90, 90, 0.45);
+    }
+
+    #tab-titles .results .card:nth-child(odd) .stats .info-icon::before {
+      border-right-color: rgba(224, 90, 90, 0.45);
+    }
+
+    #tab-titles .results .card:nth-child(even) .stats .info-icon::before {
+      border-left-color: rgba(224, 90, 90, 0.45);
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <h1>Content Breadth vs. Depth Simulation</h1>
+      <div class="tabs">
+        <button type="button" class="tab-btn active" data-tab="tab-shorts">Shorts Duplication</button>
+        <button type="button" class="tab-btn" data-tab="tab-titles">Parent Title Repetition</button>
+      </div>
+    </header>
+
+    <div class="tab-panel active" id="tab-shorts">
       <h2 class="subtitle">What does this tool do?</h2>
       <p class="lead">
         Evaluate how many Shorts served in a given session are duplicates of Shorts
@@ -272,7 +390,6 @@
         Totally Random Algo.
       </p>
       <p class="note">Note: Current recommendations are selected with no knowledge of what was recommended in prior sessions</p>
-    </header>
 
     <form class="controls" id="controls">
       <div class="title-row">
@@ -302,11 +419,11 @@
       <div class="bottom-row">
         <div>
           <label for="batch_size">Shorts Served in Session <span class="info-icon" tabindex="0" role="img" aria-label="How many shorts does the user swipe through in each session?" data-tooltip="How many shorts does the user swipe through in each session?">&#9432;</span></label>
-          <input id="batch_size" name="batch_size" type="number" value="20" min="1" max="100">
+          <input id="batch_size" name="batch_size" type="number" value="25" min="1" max="100">
         </div>
         <div>
           <label for="lookback">Lookback # of Sessions <span class="info-icon" tabindex="0" role="img" aria-label="# of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions" data-tooltip="# of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions">&#9432;</span></label>
-          <input id="lookback" name="lookback" type="number" value="1" min="1" max="10" step="1">
+          <input id="lookback" name="lookback" type="number" value="3" min="1" max="10" step="1">
         </div>
         <div style="display: none;">
           <label for="num_simulations">Simulations</label>
@@ -357,6 +474,150 @@
         <ul id="how-to-read-uniform"></ul>
       </div>
     </section>
+    </div>
+
+    <div class="tab-panel" id="tab-titles">
+      <h2 class="subtitle">What does this tool do?</h2>
+      <p class="lead">
+        Evaluate how many parent titles served in a given session are duplicates of parent titles
+        served in previous session(s) on average with the Personalized Algo vs. the
+        Totally Random Algo.
+      </p>
+      <p class="note">Note: Current recommendations are selected with no knowledge of what was recommended in prior sessions</p>
+
+    <form class="controls" id="controls-t2">
+      <div class="title-row">
+        <div class="field-group">
+          <div>
+            <label for="high_freq_titles-t2"># of High Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with a lot of shorts" data-tooltip="i.e. parent titles with a lot of shorts">&#9432;</span></label>
+            <input id="high_freq_titles-t2" name="high_freq_titles" type="number" value="275" min="0" max="5000">
+          </div>
+          <div>
+            <label for="avg_shorts_high-t2">Avg Shorts per Title (High Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average # of shorts associated with each parent title in this group" data-tooltip="Average # of shorts associated with each parent title in this group">&#9432;</span></label>
+            <input id="avg_shorts_high-t2" name="avg_shorts_high" type="number" value="6" min="1" max="50" step="0.1">
+          </div>
+        </div>
+        <div class="v-divider" aria-hidden="true"></div>
+        <div class="field-group">
+          <div>
+            <label for="low_freq_titles-t2"># of Low Frequency Titles <span class="info-icon" tabindex="0" role="img" aria-label="i.e. parent titles with lower volume of shorts" data-tooltip="i.e. parent titles with lower volume of shorts">&#9432;</span></label>
+            <input id="low_freq_titles-t2" name="low_freq_titles" type="number" value="825" min="0" max="5000">
+          </div>
+          <div>
+            <label for="avg_shorts_low-t2">Avg Shorts per Title (Low Freq) <span class="info-icon" tabindex="0" role="img" aria-label="Average # of shorts associated with each parent title in this group" data-tooltip="Average # of shorts associated with each parent title in this group">&#9432;</span></label>
+            <input id="avg_shorts_low-t2" name="avg_shorts_low" type="number" value="2" min="1" max="50" step="0.1">
+          </div>
+        </div>
+      </div>
+      <hr class="separator">
+      <div class="bottom-row">
+        <div>
+          <label for="batch_size-t2">Shorts Served in Session <span class="info-icon" tabindex="0" role="img" aria-label="How many shorts does the user swipe through in each session?" data-tooltip="How many shorts does the user swipe through in each session?">&#9432;</span></label>
+          <input id="batch_size-t2" name="batch_size" type="number" value="25" min="1" max="100">
+        </div>
+        <div>
+          <label for="lookback-t2">Lookback # of Sessions <span class="info-icon" tabindex="0" role="img" aria-label="# of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions" data-tooltip="# of most recent sessions to take into consideration, 1-10. i.e. Lookback = 4 means we are analyzing how many of the Shorts served in session were already shown in any of the last 4 sessions">&#9432;</span></label>
+          <input id="lookback-t2" name="lookback" type="number" value="3" min="1" max="10" step="1">
+        </div>
+        <div style="display: none;">
+          <label for="num_simulations-t2">Simulations</label>
+          <input id="num_simulations-t2" name="num_simulations" type="number" value="1000" min="100" max="50000" step="100">
+        </div>
+        <div style="display: none;">
+          <label for="seed-t2">Random seed (optional, best to ignore)</label>
+          <input id="seed-t2" name="seed" type="number" value="42">
+        </div>
+        <button type="submit" id="run-btn-t2">Run simulation</button>
+      </div>
+    </form>
+
+    <div class="status" id="status-t2"></div>
+
+    <div class="metric-section">
+      <h2 class="subtitle">Distinct Parent Titles Per Session</h2>
+      <div class="results">
+        <article class="card">
+          <div class="stats">
+            <h2>Personalized Algo (SRA v1)</h2>
+            <dl>
+              <dt>Avg # of distinct parent titles per session:</dt><dd id="biased-distinct-t2">—</dd>
+              <dt style="padding-left: 1.25rem;">&bull; Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. What is the min # of distinct parent titles in a single session observed" data-tooltip="i.e. What is the min # of distinct parent titles in a single session observed">&#9432;</span>:</dt><dd id="biased-distinct-max-t2">—</dd>
+            </dl>
+          </div>
+          <canvas id="chart-distinct-biased-t2" width="600" height="400"></canvas>
+        </article>
+        <article class="card">
+          <div class="stats">
+            <h2>Totally Random Algo</h2>
+            <dl>
+              <dt>Avg # of distinct parent titles per session:</dt><dd id="uniform-distinct-t2">—</dd>
+              <dt style="padding-left: 1.25rem;">&bull; Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. What is the min # of distinct parent titles in a single session observed" data-tooltip="i.e. What is the min # of distinct parent titles in a single session observed">&#9432;</span>:</dt><dd id="uniform-distinct-max-t2">—</dd>
+            </dl>
+          </div>
+          <canvas id="chart-distinct-uniform-t2" width="600" height="400"></canvas>
+        </article>
+      </div>
+      <h2 class="subtitle" style="font-size: 0.95rem; color: var(--muted); margin-top: 1.75rem;">How to interpret the graphs:</h2>
+      <p id="how-to-read-distinct-t2" style="font-size: 0.85rem; color: var(--muted);"></p>
+    </div>
+
+    <h2 class="subtitle" style="margin-bottom: 1rem;">Cross-Session Parent Title Repeats</h2>
+    <div class="results" id="results-t2">
+      <article class="card">
+        <div class="stats">
+          <h2>Personalized Algo (SRA v1)</h2>
+          <dl>
+            <dt>Avg # of Parent Titles repeated from Lookback Sessions:</dt><dd id="biased-mean-t2">—</dd>
+            <dt style="padding-left: 1.25rem;">&bull; Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. what is the max possible # of repeated parent titles from Lookback Sessions in a given session" data-tooltip="i.e. what is the max possible # of repeated parent titles from Lookback Sessions in a given session">&#9432;</span>:</dt><dd id="biased-max-t2">—</dd>
+          </dl>
+        </div>
+        <canvas id="chart-biased-t2" width="600" height="400"></canvas>
+      </article>
+      <article class="card">
+        <div class="stats">
+          <h2>Totally Random Algo</h2>
+          <dl>
+            <dt>Avg # of Parent Titles repeated from Lookback Sessions:</dt><dd id="uniform-mean-t2">—</dd>
+            <dt style="padding-left: 1.25rem;">&bull; Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. what is the max possible # of repeated parent titles from Lookback Sessions in a given session" data-tooltip="i.e. what is the max possible # of repeated parent titles from Lookback Sessions in a given session">&#9432;</span>:</dt><dd id="uniform-max-t2">—</dd>
+          </dl>
+        </div>
+        <canvas id="chart-uniform-t2" width="600" height="400"></canvas>
+      </article>
+    </div>
+
+    <section class="how-to-read">
+      <h2 class="subtitle" style="font-size: 0.95rem; color: var(--muted); margin-top: 1.75rem;">How to interpret the graphs:</h2>
+      <p id="how-to-read-t2" style="font-size: 0.85rem; color: var(--muted);"></p>
+    </section>
+
+    <div class="metric-section">
+      <h2 class="subtitle">Within-Session Parent Title Repeats</h2>
+      <div class="results">
+        <article class="card">
+          <div class="stats">
+            <h2>Personalized Algo (SRA v1)</h2>
+            <dl>
+              <dt>Avg # of Parent Title repeats in a single session: <span class="info-icon" tabindex="0" role="img" aria-label="All shorts within a single session will be distinct but there can be multiple shorts from the same parent title served. Repeats is calculated by batch size minus distinct titles" data-tooltip="All shorts within a single session will be distinct but there can be multiple shorts from the same parent title served. Repeats is calculated by batch size minus distinct titles">&#9432;</span></dt><dd id="biased-withinrepeats-t2">—</dd>
+              <dt style="padding-left: 1.25rem;">&bull; Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. What is the max # of Parent Title repeats within a single session observed" data-tooltip="i.e. What is the max # of Parent Title repeats within a single session observed">&#9432;</span>:</dt><dd id="biased-withinrepeats-max-t2">—</dd>
+            </dl>
+          </div>
+          <canvas id="chart-withinrepeats-biased-t2" width="600" height="400"></canvas>
+        </article>
+        <article class="card">
+          <div class="stats">
+            <h2>Totally Random Algo</h2>
+            <dl>
+              <dt>Avg # of Parent Title repeats in a single session: <span class="info-icon" tabindex="0" role="img" aria-label="All shorts within a single session will be distinct but there can be multiple shorts from the same parent title served. Repeats is calculated by batch size minus distinct titles" data-tooltip="All shorts within a single session will be distinct but there can be multiple shorts from the same parent title served. Repeats is calculated by batch size minus distinct titles">&#9432;</span></dt><dd id="uniform-withinrepeats-t2">—</dd>
+              <dt style="padding-left: 1.25rem;">&bull; Worst Case <span class="info-icon" tabindex="0" role="img" aria-label="i.e. What is the max # of Parent Title repeats within a single session observed" data-tooltip="i.e. What is the max # of Parent Title repeats within a single session observed">&#9432;</span>:</dt><dd id="uniform-withinrepeats-max-t2">—</dd>
+            </dl>
+          </div>
+          <canvas id="chart-withinrepeats-uniform-t2" width="600" height="400"></canvas>
+        </article>
+      </div>
+      <h2 class="subtitle" style="font-size: 0.95rem; color: var(--muted); margin-top: 1.75rem;">How to interpret the graphs:</h2>
+      <p id="how-to-read-within-t2" style="font-size: 0.85rem; color: var(--muted);"></p>
+    </div>
+    </div>
 
     <footer>Static build — computation runs client-side in a Web Worker.</footer>
   </div>
@@ -518,6 +779,190 @@
     };
   </script>
 
+  <script id="worker-titles" type="javascript/worker">
+    // ---- Seedable RNG (mulberry32) ----
+    function makeRng(seed) {
+      let a = seed >>> 0;
+      return function () {
+        a |= 0; a = (a + 0x6D2B79F5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function gaussian(rng) {
+      let u = 0, v = 0;
+      while (u === 0) u = rng();
+      while (v === 0) v = rng();
+      return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    function gammaSample(alpha, rng) {
+      if (alpha < 1) {
+        const u = rng();
+        return gammaSample(1 + alpha, rng) * Math.pow(u, 1 / alpha);
+      }
+      const d = alpha - 1 / 3;
+      const c = 1 / Math.sqrt(9 * d);
+      while (true) {
+        let x, v;
+        do {
+          x = gaussian(rng);
+          v = 1 + c * x;
+        } while (v <= 0);
+        v = v * v * v;
+        const u = rng();
+        if (u < 1 - 0.0331 * x * x * x * x) return d * v;
+        if (Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v;
+      }
+    }
+
+    function poisson(lambda, rng) {
+      const L = Math.exp(-lambda);
+      let k = 0, p = 1;
+      do { k++; p *= rng(); } while (p > L);
+      return k - 1;
+    }
+
+    function getTitleP(numTitles) {
+      const w = new Float64Array(numTitles);
+      let sum = 0;
+      for (let i = 0; i < numTitles; i++) {
+        w[i] = 1 / Math.sqrt(i + 2);
+        sum += w[i];
+      }
+      for (let i = 0; i < numTitles; i++) w[i] /= sum;
+      return w;
+    }
+
+    function getShortsPWithTitleMap(highCount, avgShortsHigh, avgShortsLow, titleP, rng) {
+      const shorts = [];
+      const shortToTitle = [];
+      for (let i = 0; i < titleP.length; i++) {
+        const mean = (i < highCount) ? avgShortsHigh : avgShortsLow;
+        const numShorts = poisson(mean - 1, rng) + 1;
+        const share = titleP[i] / numShorts;
+        for (let j = 0; j < numShorts; j++) {
+          shorts.push(share);
+          shortToTitle.push(i);
+        }
+      }
+      return { shortsP: Float64Array.from(shorts), shortToTitle: Int32Array.from(shortToTitle) };
+    }
+
+    function topKDraw(concentration, batchSize, rng) {
+      const n = concentration.length;
+      const gammas = new Float64Array(n);
+      for (let i = 0; i < n; i++) gammas[i] = gammaSample(concentration[i], rng);
+      const idx = Array.from({ length: n }, (_, i) => i);
+      idx.sort((a, b) => gammas[b] - gammas[a]);
+      return new Set(idx.slice(0, batchSize));
+    }
+
+    function simulateTitleOverlaps(shortsP, shortToTitle, batchSize, numSimulations, lookback, rng, progressBase, progressSpan) {
+      const concentration = new Float64Array(shortsP.length);
+      for (let i = 0; i < shortsP.length; i++) concentration[i] = shortsP[i] * batchSize;
+
+      const sessions = new Array(numSimulations);
+      const genStep = Math.max(1, Math.floor(numSimulations / 25));
+      let sumWithinRepeats = 0, sumDistinctTitles = 0;
+      const withinRepeatsArr = new Int32Array(numSimulations);
+      const distinctArr = new Int32Array(numSimulations);
+      for (let k = 0; k < numSimulations; k++) {
+        const shortSet = topKDraw(concentration, batchSize, rng);
+        const titleSet = new Set();
+        for (const s of shortSet) titleSet.add(shortToTitle[s]);
+        sessions[k] = titleSet;
+        const distinctTitles = titleSet.size;
+        distinctArr[k] = distinctTitles;
+        withinRepeatsArr[k] = batchSize - distinctTitles;
+        sumDistinctTitles += distinctTitles;
+        sumWithinRepeats += withinRepeatsArr[k];
+        if (k % genStep === 0) {
+          postMessage({ type: "progress", value: progressBase + (k / numSimulations) * progressSpan * 0.5 });
+        }
+      }
+
+      const overlaps = new Int32Array(numSimulations);
+      const cmpStep = Math.max(1, Math.floor(numSimulations / 25));
+      for (let i = 0; i < numSimulations; i++) {
+        const s = Math.min(lookback, numSimulations - 1);
+        const chosen = new Set();
+        while (chosen.size < s) {
+          const r = Math.floor(rng() * numSimulations);
+          if (r !== i && !chosen.has(r)) chosen.add(r);
+        }
+        const union = new Set();
+        for (const j of chosen) {
+          for (const v of sessions[j]) union.add(v);
+        }
+        let overlap = 0;
+        for (const v of sessions[i]) if (union.has(v)) overlap++;
+        overlaps[i] = overlap;
+        if (i % cmpStep === 0) {
+          postMessage({ type: "progress", value: progressBase + progressSpan * 0.5 + (i / numSimulations) * progressSpan * 0.5 });
+        }
+      }
+      return {
+        overlaps: overlaps,
+        withinRepeatsMean: sumWithinRepeats / numSimulations,
+        distinctTitlesMean: sumDistinctTitles / numSimulations,
+        withinRepeatsArr: withinRepeatsArr,
+        distinctArr: distinctArr
+      };
+    }
+
+    onmessage = function (e) {
+      const { highCount, avgShortsHigh, lowCount, avgShortsLow, batchSize, numSimulations, lookback, seed } = e.data;
+      const total = highCount + lowCount;
+      const rng = makeRng(seed);
+
+      const titlePBiased = getTitleP(total);
+      const biasedMap = getShortsPWithTitleMap(highCount, avgShortsHigh, avgShortsLow, titlePBiased, rng);
+      const biasedResult = simulateTitleOverlaps(biasedMap.shortsP, biasedMap.shortToTitle, batchSize, numSimulations, lookback, rng, 0, 0.5);
+      const overlapsBiased = biasedResult.overlaps;
+
+      const titlePUniform = new Float64Array(total).fill(1 / total);
+      const uniformMap = getShortsPWithTitleMap(highCount, avgShortsHigh, avgShortsLow, titlePUniform, rng);
+      const uniformResult = simulateTitleOverlaps(uniformMap.shortsP, uniformMap.shortToTitle, batchSize, numSimulations, lookback, rng, 0.5, 0.5);
+      const overlapsUniform = uniformResult.overlaps;
+
+      let biasedMean = 0, biasedMax = 0;
+      for (let i = 0; i < overlapsBiased.length; i++) {
+        biasedMean += overlapsBiased[i];
+        if (overlapsBiased[i] > biasedMax) biasedMax = overlapsBiased[i];
+      }
+      biasedMean /= overlapsBiased.length;
+
+      let uniformMean = 0, uniformMax = 0;
+      for (let i = 0; i < overlapsUniform.length; i++) {
+        uniformMean += overlapsUniform[i];
+        if (overlapsUniform[i] > uniformMax) uniformMax = overlapsUniform[i];
+      }
+      uniformMean /= overlapsUniform.length;
+
+      postMessage({
+        type: "done",
+        biasedOverlaps: Array.from(overlapsBiased),
+        biasedMean: biasedMean,
+        biasedMax: biasedMax,
+        uniformOverlaps: Array.from(overlapsUniform),
+        uniformMean: uniformMean,
+        uniformMax: uniformMax,
+        batchSize: batchSize,
+        biasedWithinRepeats: biasedResult.withinRepeatsMean,
+        biasedDistinctTitles: biasedResult.distinctTitlesMean,
+        uniformWithinRepeats: uniformResult.withinRepeatsMean,
+        uniformDistinctTitles: uniformResult.distinctTitlesMean,
+        biasedWithinRepeatsArr: Array.from(biasedResult.withinRepeatsArr),
+        uniformWithinRepeatsArr: Array.from(uniformResult.withinRepeatsArr),
+        biasedDistinctArr: Array.from(biasedResult.distinctArr),
+        uniformDistinctArr: Array.from(uniformResult.distinctArr)
+      });
+    };
+  </script>
+
   <script>
     const form = document.getElementById("controls");
     const statusEl = document.getElementById("status");
@@ -529,7 +974,9 @@
     );
     const workerUrl = URL.createObjectURL(workerBlob);
 
-    function drawHistogram(canvasId, overlaps, color, batchSize) {
+    function drawHistogram(canvasId, overlaps, color, batchSize, xAxisLabel, yAxisLabel) {
+      if (xAxisLabel === undefined) xAxisLabel = "# of Duplicates in a Session";
+      if (yAxisLabel === undefined) yAxisLabel = "# of Sessions with Repeats";
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext("2d");
       const W = canvas.width, H = canvas.height;
@@ -603,11 +1050,11 @@
       ctx.fillStyle = "#333";
       ctx.font = "12px system-ui, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("# of Repeats in a Session", padL + plotW / 2, H - 6);
+      ctx.fillText(xAxisLabel, padL + plotW / 2, H - 6);
       ctx.save();
       ctx.translate(32, padT + plotH / 2);
       ctx.rotate(-Math.PI / 2);
-      ctx.fillText("# of Sessions with Repeats", 0, 0);
+      ctx.fillText(yAxisLabel, 0, 0);
       ctx.restore();
 
     }
@@ -673,7 +1120,7 @@
           statusEl.textContent = "Running simulation… " + Math.round(msg.value * 100) + "%";
         } else if (msg.type === "done") {
           drawHistogram("chart-biased", msg.biasedOverlaps, "#87ceeb", msg.batchSize);
-          drawHistogram("chart-uniform", msg.uniformOverlaps, "#f08080", msg.batchSize);
+          drawHistogram("chart-uniform", msg.uniformOverlaps, "#2f6fd0", msg.batchSize);
           document.getElementById("biased-mean").textContent = msg.biasedMean.toFixed(3);
           document.getElementById("biased-max").textContent = msg.biasedMax;
           document.getElementById("uniform-mean").textContent = msg.uniformMean.toFixed(3);
@@ -698,6 +1145,162 @@
     });
 
     runSimulation();
+
+    // ---- Tab 2: Parent Title Overlap ----
+    const formT2 = document.getElementById("controls-t2");
+    const statusElT2 = document.getElementById("status-t2");
+    const runBtnT2 = document.getElementById("run-btn-t2");
+
+    const workerTitlesBlob = new Blob(
+      [document.getElementById("worker-titles").textContent],
+      { type: "application/javascript" }
+    );
+    const workerTitlesUrl = URL.createObjectURL(workerTitlesBlob);
+    const T2_CHART_BIASED = "#e05a5a";
+    const T2_CHART_UNIFORM = "#f4a6a6";
+
+    function updateHowToReadT2(biasedOverlaps) {
+      const total = biasedOverlaps.length || 1;
+      let zeroCount = 0;
+      for (const v of biasedOverlaps) if (v === 0) zeroCount++;
+      const pct = ((zeroCount / total) * 100).toFixed(1) + "%";
+      document.getElementById("how-to-read-t2").textContent =
+        pct + " of sessions using the Personalized Algo did not have any repeated parent titles from the Lookback Sessions; and so on.";
+    }
+
+    function arrayMax(arr) {
+      let max = 0;
+      for (const v of arr) if (v > max) max = v;
+      return max;
+    }
+
+    function arrayMin(arr) {
+      if (!arr.length) return 0;
+      let min = arr[0];
+      for (const v of arr) if (v < min) min = v;
+      return min;
+    }
+
+    function firstNonEmptyBar(arr) {
+      const total = arr.length || 1;
+      let maxVal = 0;
+      for (const v of arr) if (v > maxVal) maxVal = v;
+      const counts = new Array(maxVal + 1).fill(0);
+      for (const v of arr) counts[v]++;
+      for (let k = 0; k <= maxVal; k++) {
+        if (counts[k] > 0) return { k: k, pct: ((counts[k] / total) * 100).toFixed(1) + "%" };
+      }
+      return null;
+    }
+
+    function updateHowToReadWithinT2(biasedWithinRepeatsArr) {
+      const bar = firstNonEmptyBar(biasedWithinRepeatsArr);
+      if (!bar) {
+        document.getElementById("how-to-read-within-t2").textContent = "";
+        return;
+      }
+      let text;
+      if (bar.k === 0) {
+        text = bar.pct + " of sessions using the Personalized Algo did not have any within-session Parent Title repeats; and so on.";
+      } else {
+        const word = bar.k === 1 ? "repeat" : "repeats";
+        text = bar.pct + " of sessions using the Personalized Algo had " + bar.k + " within-session Parent Title " + word + "; and so on.";
+      }
+      document.getElementById("how-to-read-within-t2").textContent = text;
+    }
+
+    function updateHowToReadDistinctT2(biasedDistinctArr) {
+      const bar = firstNonEmptyBar(biasedDistinctArr);
+      if (!bar) {
+        document.getElementById("how-to-read-distinct-t2").textContent = "";
+        return;
+      }
+      const word = bar.k === 1 ? "title" : "titles";
+      document.getElementById("how-to-read-distinct-t2").textContent =
+        bar.pct + " of sessions using the Personalized Algo had " + bar.k + " distinct parent " + word + "; and so on.";
+    }
+
+    function runSimulationT2() {
+      runBtnT2.disabled = true;
+      statusElT2.textContent = "Running simulation…";
+
+      const payload = Object.fromEntries(new FormData(formT2).entries());
+      let lookback = Number(payload.lookback);
+      if (Number.isNaN(lookback) || lookback < 1) lookback = 1;
+      if (lookback > 10) lookback = 10;
+
+      const params = {
+        highCount: Number(payload.high_freq_titles),
+        avgShortsHigh: Number(payload.avg_shorts_high),
+        lowCount: Number(payload.low_freq_titles),
+        avgShortsLow: Number(payload.avg_shorts_low),
+        batchSize: Number(payload.batch_size),
+        lookback: lookback,
+        numSimulations: Number(payload.num_simulations),
+        seed: Number(payload.seed),
+      };
+
+      const worker = new Worker(workerTitlesUrl);
+      worker.onmessage = function (e) {
+        const msg = e.data;
+        if (msg.type === "progress") {
+          statusElT2.textContent = "Running simulation… " + Math.round(msg.value * 100) + "%";
+        } else if (msg.type === "done") {
+          drawHistogram("chart-biased-t2", msg.biasedOverlaps, T2_CHART_BIASED, msg.batchSize, "# of Repeated Titles in a Session");
+          drawHistogram("chart-uniform-t2", msg.uniformOverlaps, T2_CHART_UNIFORM, msg.batchSize, "# of Repeated Titles in a Session");
+          document.getElementById("biased-mean-t2").textContent = msg.biasedMean.toFixed(3);
+          document.getElementById("biased-max-t2").textContent = msg.biasedMax;
+          document.getElementById("uniform-mean-t2").textContent = msg.uniformMean.toFixed(3);
+          document.getElementById("uniform-max-t2").textContent = msg.uniformMax;
+          document.getElementById("biased-withinrepeats-t2").textContent = msg.biasedWithinRepeats.toFixed(1);
+          document.getElementById("biased-distinct-t2").textContent = msg.biasedDistinctTitles.toFixed(1);
+          document.getElementById("uniform-withinrepeats-t2").textContent = msg.uniformWithinRepeats.toFixed(1);
+          document.getElementById("uniform-distinct-t2").textContent = msg.uniformDistinctTitles.toFixed(1);
+          document.getElementById("biased-distinct-max-t2").textContent = arrayMin(msg.biasedDistinctArr);
+          document.getElementById("uniform-distinct-max-t2").textContent = arrayMin(msg.uniformDistinctArr);
+          document.getElementById("biased-withinrepeats-max-t2").textContent = arrayMax(msg.biasedWithinRepeatsArr);
+          document.getElementById("uniform-withinrepeats-max-t2").textContent = arrayMax(msg.uniformWithinRepeatsArr);
+          drawHistogram("chart-withinrepeats-biased-t2", msg.biasedWithinRepeatsArr, T2_CHART_BIASED, msg.batchSize, "# of Parent Title Repeats Within Session", "# of Sessions");
+          drawHistogram("chart-withinrepeats-uniform-t2", msg.uniformWithinRepeatsArr, T2_CHART_UNIFORM, msg.batchSize, "# of Parent Title Repeats Within Session", "# of Sessions");
+          drawHistogram("chart-distinct-biased-t2", msg.biasedDistinctArr, T2_CHART_BIASED, msg.batchSize, "# of Distinct Titles in a Session", "# of Sessions");
+          drawHistogram("chart-distinct-uniform-t2", msg.uniformDistinctArr, T2_CHART_UNIFORM, msg.batchSize, "# of Distinct Titles in a Session", "# of Sessions");
+          updateHowToReadT2(msg.biasedOverlaps);
+          updateHowToReadWithinT2(msg.biasedWithinRepeatsArr);
+          updateHowToReadDistinctT2(msg.biasedDistinctArr);
+          statusElT2.textContent = "Completed " + params.numSimulations.toLocaleString() + " simulations.";
+          runBtnT2.disabled = false;
+          worker.terminate();
+        }
+      };
+      worker.onerror = function (err) {
+        statusElT2.textContent = "Something went wrong: " + err.message;
+        runBtnT2.disabled = false;
+        worker.terminate();
+      };
+      worker.postMessage(params);
+    }
+
+    formT2.addEventListener("submit", (event) => {
+      event.preventDefault();
+      runSimulationT2();
+    });
+
+    // ---- Tab switching ----
+    let tab2HasRun = false;
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-tab");
+        tabButtons.forEach((b) => b.classList.toggle("active", b === btn));
+        tabPanels.forEach((panel) => panel.classList.toggle("active", panel.id === targetId));
+        if (targetId === "tab-titles" && !tab2HasRun) {
+          tab2HasRun = true;
+          runSimulationT2();
+        }
+      });
+    });
   </script>
 </body>
 </html>
