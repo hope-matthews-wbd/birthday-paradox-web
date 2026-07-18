@@ -72,16 +72,20 @@ See [docs/MODEL.md](docs/MODEL.md) for the full calculation specification, worke
 ├── docs/
 │   └── MODEL.md       # Simulation methodology and limitations
 ├── index.html         # UI, styles, workers, model, and chart rendering
+├── netlify/
+│   └── edge-functions/
+│       └── basic-auth.js  # Production HTTP Basic Authentication gate
 ├── netlify.toml       # Netlify static-site configuration
 └── tests/
-    └── catalog-model.test.js  # Dependency-free model regression checks
+    ├── basic-auth.test.mjs     # Authentication response checks
+    └── catalog-model.test.js   # Dependency-free model regression checks
 ```
 
 The project deliberately uses a single HTML file and browser-native APIs:
 
 - no framework or third-party runtime libraries;
 - no package manager or compilation step;
-- no backend, database, or network requests; and
+- no application backend, database, or network requests; and
 - all simulation data remains in the visitor's browser.
 
 ## Deployment
@@ -95,7 +99,18 @@ The included `netlify.toml` publishes the repository root:
   publish = "."
 ```
 
-Connect the repository to Netlify and deploy it as a static site. No build command or environment variables are required.
+Connect the repository to Netlify and deploy it as a static site. No build command is required.
+
+### Access control
+
+The deployed site is protected by HTTP Basic Authentication in a Netlify Edge Function. Credentials are read from Functions-scoped Netlify environment variables and must never be committed to Git:
+
+```sh
+netlify env:set SITE_BASIC_AUTH_USERNAME "<username>" --scope functions --secret
+netlify env:set SITE_BASIC_AUTH_PASSWORD "<password>" --scope functions --secret
+```
+
+Set the variables for every deploy context that should be protected. Netlify applies Edge Function environment-variable changes at deploy time, so publish a new deploy after changing either credential. The local static server remains ungated; use the authentication test below to verify the gate without storing real credentials locally.
 
 All runtime paths are relative and the simulation makes no API calls, so the same code runs locally and on a public static origin. The workers are created from in-page Blob URLs. Netlify's default headers permit this; if a different host adds a Content Security Policy, its `worker-src` directive must allow `blob:` and its script policy must permit this page's inline scripts.
 
@@ -105,6 +120,12 @@ Run the dependency-free catalog/model regression checks:
 
 ```sh
 node tests/catalog-model.test.js
+```
+
+Run the Edge Function authentication checks:
+
+```sh
+node tests/basic-auth.test.mjs
 ```
 
 They exercise the default catalog, an added high-clip row, a wide one-clip-per-title catalog, and a deep multi-clip catalog through both workers. The checks verify output lengths and bounds, confirm that `distinct titles + within-session repeats = session size`, and prove that adding a row changes both algorithm result sets.
