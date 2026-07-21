@@ -24,7 +24,7 @@ It is a scenario-exploration tool. It does not ingest production data, reproduce
 | `m_i` | Entered number of Shorts belonging to title `i` |
 | `p_ij` | Exposure probability of Short `j` from title `i` |
 
-The shipped defaults contain 479 titles and 807 Shorts, with `B = 25`, `M = 1,000`, and `K = 3`.
+The shipped defaults contain 552 titles and 1,020 Shorts, with `B = 25`, `M = 1,000`, and `K = 3`.
 
 ## End-to-end calculation
 
@@ -104,40 +104,42 @@ The default input table expands as follows:
 
 | Shorts per title | Titles | Shorts |
 | ---: | ---: | ---: |
-| 6 | 10 | 60 |
-| 5 | 9 | 45 |
-| 4 | 20 | 80 |
-| 3 | 25 | 75 |
-| 2 | 132 | 264 |
-| 1 | 283 | 283 |
-| **Total** | **479** | **807** |
+| 10 | 1 | 10 |
+| 9 | 2 | 18 |
+| 6 | 14 | 84 |
+| 5 | 18 | 90 |
+| 4 | 22 | 88 |
+| 3 | 32 | 96 |
+| 2 | 171 | 342 |
+| 1 | 292 | 292 |
+| **Total** | **552** | **1,020** |
 
-For the rank-weighted strategy, the normalization constant across 479 titles is approximately:
+For the rank-weighted strategy, the normalization constant across 552 titles is approximately:
 
 ```text
-sum(1 / sqrt(r + 2), r = 0..478) = 41.380268
+sum(1 / sqrt(r + 2), r = 0..551) = 44.592809
 ```
 
 The highest-ranked title therefore receives:
 
 ```text
-q_0 = (1 / sqrt(2)) / 41.380268 = 0.017088
+q_0 = (1 / sqrt(2)) / 44.592809 = 0.015857
 ```
 
-That title is in the six-Short row, so each of its Shorts receives:
+That title is in the ten-Short row, so each of its Shorts receives:
 
 ```text
-p_0j = 0.017088 / 6 = 0.002848
-alpha_0j = B * p_0j = 25 * 0.002848 = 0.071200
+p_0j = 0.015857 / 10 = 0.001586
+alpha_0j = B * p_0j = 25 * 0.001586 = 0.039642
 ```
 
 For the uniform-title strategy, every title receives:
 
 ```text
-q_i = 1 / 479 = 0.002088
+q_i = 1 / 552 = 0.001812
 ```
 
-A Short from a six-Short title receives approximately `0.000348`, while the only Short from a one-Short title receives `0.002088`. This is why the comparator is uniform by **title**, not by individual Short.
+A Short from a six-Short title receives approximately `0.000302`, while the only Short from a one-Short title receives `0.001812`. This is why the comparator is uniform by **title**, not by individual Short.
 
 ## 3. Session generation
 
@@ -244,19 +246,19 @@ The predictions are conditional on the entered catalog, session size, lookback, 
 
 ## Default seeded regression baseline
 
-With the shipped 479-title / 807-Short catalog, `B = 25`, `K = 3`, `M = 1,000`, and seed `42`, the current implementation produces:
+With the shipped 552-title / 1,020-Short catalog, `B = 25`, `K = 3`, `M = 1,000`, and seed `42`, the current implementation produces:
 
 | Metric | Personalized Algo | Totally Random Algo |
 | --- | ---: | ---: |
-| Exact-Short overlap mean | 2.315 | 2.840 |
-| Exact-Short overlap observed maximum | 7 | 8 |
-| Cross-session title overlap mean | 4.918 | 3.569 |
-| Cross-session title overlap observed maximum | 13 | 10 |
-| Distinct titles mean | 24.3 | 24.8 |
-| Distinct titles observed minimum | 21 | 23 |
-| Within-session title repeats mean | 0.7 | 0.2 |
-| Within-session title repeats observed maximum | 4 | 2 |
-| Sessions with multiple clips from a title | 48.1% | 14.8% |
+| Exact-Short overlap mean | 1.784 | 2.298 |
+| Exact-Short overlap observed maximum | 8 | 7 |
+| Cross-session title overlap mean | 4.334 | 3.130 |
+| Cross-session title overlap observed maximum | 10 | 11 |
+| Distinct titles mean | 24.4 | 24.8 |
+| Distinct titles observed minimum | 21 | 22 |
+| Within-session title repeats mean | 0.6 | 0.2 |
+| Within-session title repeats observed maximum | 4 | 3 |
+| Sessions with multiple clips from a title | 43.8% | 15.5% |
 
 These values are regression fixtures for the current JavaScript implementation, not external evidence that the model is correct. An intentional change to sampling, random-number consumption, rank assignment, or metric definitions may change them and should update this table.
 

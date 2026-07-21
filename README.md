@@ -33,12 +33,12 @@ Serving over HTTP is preferred to opening `index.html` directly because browser 
 
 ## Use the simulator
 
-Configure the exact catalog composition and session assumptions. The catalog editor starts with the supplied 479-title / 807-clip distribution, and its totals update as rows change.
+Configure the exact catalog composition and session assumptions. The catalog editor starts with the supplied 552-title / 1,020-clip distribution, and its totals update as rows change.
 
 | Input | Meaning | Default |
 | --- | --- | ---: |
-| Clips per title | Exact number of clips belonging to titles in one catalog row | 1-6 |
-| Number of titles | Exact number of titles having that row's clip count | 479 total |
+| Clips per title | Exact number of clips belonging to titles in one catalog row | 1-10 |
+| Number of titles | Exact number of titles having that row's clip count | 552 total |
 | Shorts Served in Session | Number of unique Shorts selected for one simulated session | 25 |
 | Lookback # of Sessions | Number of other sessions used for the overlap comparison | 3 |
 

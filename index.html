@@ -1161,12 +1161,12 @@ session = TopB(g)</code>
                 <tr><th>Calculation</th><th>Default value</th><th>How it is derived</th></tr>
               </thead>
               <tbody>
-                <tr><td>Total parent titles</td><td>479</td><td>10 + 9 + 20 + 25 + 132 + 283</td></tr>
-                <tr><td>Total clips</td><td>807</td><td>(6×10) + (5×9) + (4×20) + (3×25) + (2×132) + (1×283)</td></tr>
-                <tr><td>Highest personalized title probability</td><td>0.017088</td><td>(1 / sqrt(2)) divided by the sum of all 479 rank weights</td></tr>
-                <tr><td>Each clip from that six-clip title</td><td>0.002848</td><td>0.017088 / 6</td></tr>
-                <tr><td>Its Dirichlet concentration</td><td>0.071200</td><td>25 × 0.002848</td></tr>
-                <tr><td>Uniform title probability</td><td>0.002088</td><td>1 / 479</td></tr>
+                <tr><td>Total parent titles</td><td>552</td><td>1 + 2 + 14 + 18 + 22 + 32 + 171 + 292</td></tr>
+                <tr><td>Total clips</td><td>1,020</td><td>(10×1) + (9×2) + (6×14) + (5×18) + (4×22) + (3×32) + (2×171) + (1×292)</td></tr>
+                <tr><td>Highest personalized title probability</td><td>0.015857</td><td>(1 / sqrt(2)) divided by the sum of all 552 rank weights</td></tr>
+                <tr><td>Each clip from that ten-clip title</td><td>0.001586</td><td>0.015857 / 10</td></tr>
+                <tr><td>Its Dirichlet concentration</td><td>0.039642</td><td>25 × 0.001586</td></tr>
+                <tr><td>Uniform title probability</td><td>0.001812</td><td>1 / 552</td></tr>
               </tbody>
             </table>
           </div>
@@ -1209,7 +1209,7 @@ session = TopB(g)</code>
         <div>
           <h2 class="subtitle">Default seeded regression baseline</h2>
           <p class="lead" style="font-size: 0.85rem; margin-bottom: 0.75rem;">
-            Expected output for the default 479-title / 807-clip catalog, 25 clips per session,
+            Expected output for the default 552-title / 1,020-clip catalog, 25 clips per session,
             three lookback sessions, 1,000 simulations, and seed 42.
           </p>
           <div class="methodology-table-wrap">
@@ -1218,11 +1218,11 @@ session = TopB(g)</code>
                 <tr><th>Metric</th><th>Personalized Algo</th><th>Totally Random Algo</th></tr>
               </thead>
               <tbody>
-                <tr><td>Exact-clip overlap mean / observed maximum</td><td>2.315 / 7</td><td>2.840 / 8</td></tr>
-                <tr><td>Cross-session title overlap mean / observed maximum</td><td>4.918 / 13</td><td>3.569 / 10</td></tr>
-                <tr><td>Distinct titles mean / observed minimum</td><td>24.3 / 21</td><td>24.8 / 23</td></tr>
-                <tr><td>Within-session title repeats mean / observed maximum</td><td>0.7 / 4</td><td>0.2 / 2</td></tr>
-                <tr><td>Sessions with multiple clips from a title</td><td>48.1%</td><td>14.8%</td></tr>
+                <tr><td>Exact-clip overlap mean / observed maximum</td><td>1.784 / 8</td><td>2.298 / 7</td></tr>
+                <tr><td>Cross-session title overlap mean / observed maximum</td><td>4.334 / 10</td><td>3.130 / 11</td></tr>
+                <tr><td>Distinct titles mean / observed minimum</td><td>24.4 / 21</td><td>24.8 / 22</td></tr>
+                <tr><td>Within-session title repeats mean / observed maximum</td><td>0.6 / 4</td><td>0.2 / 3</td></tr>
+                <tr><td>Sessions with multiple clips from a title</td><td>43.8%</td><td>15.5%</td></tr>
               </tbody>
             </table>
           </div>
@@ -1619,12 +1619,14 @@ session = TopB(g)</code>
 
   <script>
     const DEFAULT_CATALOG = [
-      { clipsPerTitle: 6, titleCount: 10 },
-      { clipsPerTitle: 5, titleCount: 9 },
-      { clipsPerTitle: 4, titleCount: 20 },
-      { clipsPerTitle: 3, titleCount: 25 },
-      { clipsPerTitle: 2, titleCount: 132 },
-      { clipsPerTitle: 1, titleCount: 283 },
+      { clipsPerTitle: 10, titleCount: 1 },
+      { clipsPerTitle: 9, titleCount: 2 },
+      { clipsPerTitle: 6, titleCount: 14 },
+      { clipsPerTitle: 5, titleCount: 18 },
+      { clipsPerTitle: 4, titleCount: 22 },
+      { clipsPerTitle: 3, titleCount: 32 },
+      { clipsPerTitle: 2, titleCount: 171 },
+      { clipsPerTitle: 1, titleCount: 292 },
     ];
 
     const catalogRowsEl = document.getElementById("catalog-rows");
